@@ -36,6 +36,8 @@ steps:
       UPSTREAM_DIGEST_ARM64: sha256:4d223f2c56314d3c7c50c96f0e44de8ec61f9e23250e54bd597fd0aaf0acb0ca
       TEST_URL: http://localhost:8080
     commands:
+      - cat linux-amd64.Dockerfile
+      - cat linux-arm64.Dockerfile
       - sleep 5
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64
