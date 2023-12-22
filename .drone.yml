@@ -70,8 +70,10 @@ steps:
         --push
         .
       - docker buildx rm --all-inactive -f
-      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee --amend $DOCKERHUB_USERNAME/qbittorrent-ee-amd64 --amend $DOCKERHUB_USERNAME/qbittorrent-ee-arm64
-      - docker push $DOCKERHUB_USERNAME/qbittorrent-ee
+      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest
+      - docker docker manifest annotate $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee-amd64 --arch amd64
+      - docker docker manifest annotate $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee-arm64 --arch arm64
+      - docker manifest push $DOCKERHUB_USERNAME/qbittorrent-ee:latest
 
 services:
   - name: docker service
