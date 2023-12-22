@@ -38,9 +38,9 @@ steps:
       UPSTREAM_DIGEST_ARM64: sha256:4d223f2c56314d3c7c50c96f0e44de8ec61f9e23250e54bd597fd0aaf0acb0ca
       TEST_URL: http://localhost:8080
     commands:
-      - export IMAGE=$(basename "$(git rev-parse --show-toplevel)")
       - apk update
-      - apk add skopeo
+      - apk add skopeo git
+      - export IMAGE=$(basename "$(git rev-parse --show-toplevel)")
       - sleep 5
       - skopeo login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN $REGISTRY
       - docker login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN $REGISTRY
