@@ -20,7 +20,8 @@ steps:
         path: /var/run
     privileged: true
     environment:
-      REGISTRY: git.nagaseyami.com
+      REGISTRY:
+        from_secret: REGISTRY
       GITEA_USERNAME:
         from_secret: GITEA_USERNAME
       GITEA_ACCESS_TOKEN:
@@ -37,6 +38,7 @@ steps:
       UPSTREAM_DIGEST_ARM64: sha256:4d223f2c56314d3c7c50c96f0e44de8ec61f9e23250e54bd597fd0aaf0acb0ca
       TEST_URL: http://localhost:8080
     commands:
+      - export IMAGE=$(basename "$(git rev-parse --show-toplevel)")
       - apk update
       - apk add skopeo
       - sleep 5
@@ -44,7 +46,7 @@ steps:
       - docker login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN $REGISTRY
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64
-        --tag $REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
+        --tag $REGISTRY/$GITEA_USERNAME/$IMAGE:amd64
         --file linux-amd64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -59,7 +61,7 @@ steps:
         --push
         .
       - docker buildx build --platform linux/arm64
-        --tag $REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
+        --tag $REGISTRY/$GITEA_USERNAME/$IMAGE:arm64
         --file linux-arm64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -74,11 +76,11 @@ steps:
         --push
         .
       - docker buildx rm --all-inactive -f
-      - docker buildx imagetools create -t $REGISTRY/$GITEA_USERNAME/qbittorrent:latest
-        $REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
-        $REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
-      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
-      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
+      - docker buildx imagetools create -t $REGISTRY/$GITEA_USERNAME/$IMAGE:latest
+        $REGISTRY/$GITEA_USERNAME/$IMAGE:amd64
+        $REGISTRY/$GITEA_USERNAME/$IMAGE:arm64
+      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/$IMAGE:amd64
+      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/$IMAGE:arm64
 
 services:
   - name: docker service
