@@ -40,31 +40,31 @@ steps:
       - apk add --no-cache jq
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64 \
-      - --tag $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 \
-      - --build-arg LATEST=$LATEST \
-      - --build-arg DESCRIPTION=$DESCRIPTION \
-      - --build-arg VERSION=$VERSION \
-      - --build-arg FULL_VERSION=$FULL_VERSION \
-      - --build-arg VUETORRENT_VERSION=$VUETORRENT_VERSION \
-      - --build-arg CHANGELOG=$CHANGELOG \
-      - --build-arg UPSTREAM_IMAGE=$UPSTREAM_IMAGE \
-      - --build-arg UPSTREAM_TAG=$UPSTREAM_TAG \
-      - --build-arg UPSTREAM_DIGEST_AMD64=$UPSTREAM_DIGEST_AMD64 \
-      - --build-arg TEST_URL=$TEST_URL \
-      - linux-amd64.Dockerfile
+        --tag $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 \
+        --build-arg LATEST=$LATEST \
+        --build-arg DESCRIPTION=$DESCRIPTION \
+        --build-arg VERSION=$VERSION \
+        --build-arg FULL_VERSION=$FULL_VERSION \
+        --build-arg VUETORRENT_VERSION=$VUETORRENT_VERSION \
+        --build-arg CHANGELOG=$CHANGELOG \
+        --build-arg UPSTREAM_IMAGE=$UPSTREAM_IMAGE \
+        --build-arg UPSTREAM_TAG=$UPSTREAM_TAG \
+        --build-arg UPSTREAM_DIGEST_AMD64=$UPSTREAM_DIGEST_AMD64 \
+        --build-arg TEST_URL=$TEST_URL \
+        linux-amd64.Dockerfile
       - docker buildx build --platform linux/arm64 \
-      - --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64 \
-      - --build-arg LATEST=$LATEST \
-      - --build-arg DESCRIPTION=$DESCRIPTION \
-      - --build-arg VERSION=$VERSION \
-      - --build-arg FULL_VERSION=$FULL_VERSION \
-      - --build-arg VUETORRENT_VERSION=$VUETORRENT_VERSION \
-      - --build-arg CHANGELOG=$CHANGELOG \
-      - --build-arg UPSTREAM_IMAGE=$UPSTREAM_IMAGE \
-      - --build-arg UPSTREAM_TAG=$UPSTREAM_TAG \
-      - --build-arg UPSTREAM_DIGEST_ARM64=$UPSTREAM_DIGEST_ARM64 \
-      - --build-arg TEST_URL=$TEST_URL \
-      - linux-arm64.Dockerfile
+        --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64 \
+        --build-arg LATEST=$LATEST \
+        --build-arg DESCRIPTION=$DESCRIPTION \
+        --build-arg VERSION=$VERSION \
+        --build-arg FULL_VERSION=$FULL_VERSION \
+        --build-arg VUETORRENT_VERSION=$VUETORRENT_VERSION \
+        --build-arg CHANGELOG=$CHANGELOG \
+        --build-arg UPSTREAM_IMAGE=$UPSTREAM_IMAGE \
+        --build-arg UPSTREAM_TAG=$UPSTREAM_TAG \
+        --build-arg UPSTREAM_DIGEST_ARM64=$UPSTREAM_DIGEST_ARM64 \
+        --build-arg TEST_URL=$TEST_URL \
+        linux-arm64.Dockerfile
       - docker buildx rm --all-inactive -f
       - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
