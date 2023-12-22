@@ -55,7 +55,7 @@ steps:
         --push
         .
       - docker buildx build --platform linux/arm64
-        --tag qbittorrent-ee:arm64
+        --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
         --file linux-arm64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
