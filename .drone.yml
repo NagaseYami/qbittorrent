@@ -20,6 +20,7 @@ steps:
         path: /var/run
     privileged: true
     environment:
+      REGISTRY: git.nagaseyami.com
       GITEA_USERNAME:
         from_secret: GITEA_USERNAME
       GITEA_ACCESS_TOKEN:
@@ -39,11 +40,11 @@ steps:
       - apk update
       - apk add skopeo
       - sleep 5
-      - skopeo login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN git.nagaseyami.com
-      - docker login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN git.nagaseyami.com
+      - skopeo login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN $REGISTRY
+      - docker login -u $GITEA_USERNAME -p $GITEA_ACCESS_TOKEN $REGISTRY
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64
-        --tag $GITEA_USERNAME/qbittorrent:amd64
+        --tag $REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
         --file linux-amd64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -58,7 +59,7 @@ steps:
         --push
         .
       - docker buildx build --platform linux/arm64
-        --tag $GITEA_USERNAME/qbittorrent:arm64
+        --tag $REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
         --file linux-arm64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -73,11 +74,11 @@ steps:
         --push
         .
       - docker buildx rm --all-inactive -f
-      - docker buildx imagetools create -t $GITEA_USERNAME/qbittorrent:latest
-        $GITEA_USERNAME/qbittorrent:amd64
-        $GITEA_USERNAME/qbittorrent:arm64
-      - skopeo delete docker://git.nagaseyami.com/$GITEA_USERNAME/qbittorrent:amd64
-      - skopeo delete docker://git.nagaseyami.com/$GITEA_USERNAME/qbittorrent:arm64
+      - docker buildx imagetools create -t $REGISTRY/$GITEA_USERNAME/qbittorrent:latest
+        $REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
+        $REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
+      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/qbittorrent:amd64
+      - skopeo delete docker://$REGISTRY/$GITEA_USERNAME/qbittorrent:arm64
 
 services:
   - name: docker service
