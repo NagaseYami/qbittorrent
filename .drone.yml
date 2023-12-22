@@ -1,0 +1,47 @@
+kind: pipeline
+type: docker
+name: build and push docker image
+
+trigger:
+  branch:
+    - qee/release
+  event:
+    - push
+
+clone:
+  depth: 1
+  retries: 3
+
+steps:
+  - name: docker buildx & push
+    image: docker:dind
+    volumes:
+      - name: dockersock
+        path: /var/run
+    privileged: true
+    environment:
+      DOCKERHUB_USERNAME:
+        from_secret: DOCKERHUB_USERNAME
+      DOCKERHUB_TOKEN:
+        from_secret: DOCKERHUB_TOKEN
+    commands:
+      - apk update
+      - apk add --no-cache jq
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+      - docker buildx create --platform linux/amd64,linux/arm64 --use
+      - docker buildx build --platform linux/amd64 --tag $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $(for i in $(jq -r 'to_entries[] | [(.key | ascii_upcase),.value] | join("=")' < VERSION.json); do out+="--build-arg $i " ; done; echo $out;out="") linux-amd64.Dockerfile
+      - docker buildx build --platform linux/arm64 --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64 $(for i in $(jq -r 'to_entries[] | [(.key | ascii_upcase),.value] | join("=")' < VERSION.json); do out+="--build-arg $i " ; done; echo $out;out="") linux-arm64.Dockerfile
+      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
+      - docker push $DOCKERHUB_USERNAME/qbittorrent-ee:latest
+
+services:
+  - name: docker service
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+
+volumes:
+  - name: dockersock
+    temp: {}
