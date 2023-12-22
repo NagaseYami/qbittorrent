@@ -40,7 +40,7 @@ steps:
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64
-        --tag $DOCKERHUB_USERNAME/qbittorrent-ee:amd64
+        --tag $DOCKERHUB_USERNAME/qbittorrent-ee-amd64
         --file linux-amd64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -55,7 +55,7 @@ steps:
         --push
         .
       - docker buildx build --platform linux/arm64
-        --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
+        --tag $DOCKERHUB_USERNAME/qbittorrent-ee-arm64
         --file linux-arm64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
@@ -70,8 +70,8 @@ steps:
         --push
         .
       - docker buildx rm --all-inactive -f
-      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest --amend $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 --amend $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
-      - docker push $DOCKERHUB_USERNAME/qbittorrent-ee:latest
+      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee --amend $DOCKERHUB_USERNAME/qbittorrent-ee-amd64 --amend $DOCKERHUB_USERNAME/qbittorrent-ee-arm64
+      - docker push $DOCKERHUB_USERNAME/qbittorrent-ee
 
 services:
   - name: docker service
