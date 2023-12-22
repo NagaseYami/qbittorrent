@@ -73,7 +73,6 @@ steps:
       - docker buildx imagetools create -t $DOCKERHUB_USERNAME/qbittorrent-ee:latest
         $DOCKERHUB_USERNAME/qbittorrent-ee-amd64:latest
         $DOCKERHUB_USERNAME/qbittorrent-ee-arm64:latest
-      - docker push $DOCKERHUB_USERNAME/qbittorrent-ee:latest
 
 services:
   - name: docker service
