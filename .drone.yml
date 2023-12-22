@@ -52,7 +52,6 @@ steps:
         --build-arg UPSTREAM_TAG=$UPSTREAM_TAG
         --build-arg UPSTREAM_DIGEST_AMD64=$UPSTREAM_DIGEST_AMD64
         --build-arg TEST_URL=$TEST_URL
-        --push
         .
       - docker buildx build --platform linux/arm64
         --tag qbittorrent-ee-arm64:latest
@@ -67,7 +66,6 @@ steps:
         --build-arg UPSTREAM_TAG=$UPSTREAM_TAG
         --build-arg UPSTREAM_DIGEST_ARM64=$UPSTREAM_DIGEST_ARM64
         --build-arg TEST_URL=$TEST_URL
-        --push
         .
       - docker buildx rm --all-inactive -f
       - docker buildx imagetools create -t $DOCKERHUB_USERNAME/qbittorrent-ee:latest
