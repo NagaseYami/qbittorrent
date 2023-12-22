@@ -14,7 +14,8 @@ RUN apk add --no-cache privoxy iptables ip6tables iproute2 openresolv wireguard-
 
 ARG FULL_VERSION
 
-RUN curl -fsSL "https://github.com/userdocs/qbittorrent-nox-static/releases/download/${FULL_VERSION}/x86_64-qbittorrent-nox" > "${APP_DIR}/qbittorrent-nox" && \
+RUN curl -fsSL "https://github.com/c0re100/qBittorrent-Enhanced-Edition/releases/download/${FULL_VERSION}/qbittorrent-enhanced-nox_x86_64-linux-musl_static.zip" > "/tmp/qbittorrent-nox.zip" && \
+    unzip "/tmp/qbittorrent-nox.zip" -d "${APP_DIR}" && \
     chmod 755 "${APP_DIR}/qbittorrent-nox"
 
 ARG VUETORRENT_VERSION
