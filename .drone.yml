@@ -36,12 +36,11 @@ steps:
       UPSTREAM_DIGEST_ARM64: sha256:4d223f2c56314d3c7c50c96f0e44de8ec61f9e23250e54bd597fd0aaf0acb0ca
       TEST_URL: http://localhost:8080
     commands:
-      - cat linux-amd64.Dockerfile
-      - cat linux-arm64.Dockerfile
       - sleep 5
       - docker buildx create --platform linux/amd64,linux/arm64 --use
       - docker buildx build --platform linux/amd64
         --tag $DOCKERHUB_USERNAME/qbittorrent-ee:amd64
+        --file linux-amd64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
         --build-arg VERSION=$VERSION
@@ -52,9 +51,10 @@ steps:
         --build-arg UPSTREAM_TAG=$UPSTREAM_TAG
         --build-arg UPSTREAM_DIGEST_AMD64=$UPSTREAM_DIGEST_AMD64
         --build-arg TEST_URL=$TEST_URL
-        ./linux-amd64.Dockerfile
+        .
       - docker buildx build --platform linux/arm64
         --tag $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
+        --file linux-arm64.Dockerfile
         --build-arg LATEST=$LATEST
         --build-arg DESCRIPTION=$DESCRIPTION
         --build-arg VERSION=$VERSION
@@ -65,7 +65,7 @@ steps:
         --build-arg UPSTREAM_TAG=$UPSTREAM_TAG
         --build-arg UPSTREAM_DIGEST_ARM64=$UPSTREAM_DIGEST_ARM64
         --build-arg TEST_URL=$TEST_URL
-        ./linux-arm64.Dockerfile
+        .
       - docker buildx rm --all-inactive -f
       - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
