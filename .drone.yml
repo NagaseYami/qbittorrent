@@ -67,8 +67,8 @@ steps:
         --build-arg TEST_URL=$TEST_URL
         .
       - docker buildx rm --all-inactive -f
-      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
       - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+      - docker manifest create $DOCKERHUB_USERNAME/qbittorrent-ee:latest $DOCKERHUB_USERNAME/qbittorrent-ee:amd64 $DOCKERHUB_USERNAME/qbittorrent-ee:arm64
       - docker push $DOCKERHUB_USERNAME/qbittorrent-ee:latest
 
 services:
